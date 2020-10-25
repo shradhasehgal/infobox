@@ -170,7 +170,7 @@ class WikiHandler(xml.sax.ContentHandler):
                     # field2[_cat].append(self.id)
 
                     for x in _cat.split(" "):
-                        field2[x].append(self.id)
+                        field2[x].append(self.title)
                 # if f:
                 #     field2["लोग"]+=1
                 #field2[self.title.strip()].append(clean(self.data , "c"))                
