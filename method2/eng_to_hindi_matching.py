@@ -18,14 +18,17 @@ endpoint_url = "https://query.wikidata.org/sparql"
 requests.packages.urllib3.disable_warnings()
 headers = {'User-Agent': 'Mozilla/5.0'}
 english_to_hindi_data = []
+overall={"data":[]}
 with open('hindi_person_data.json') as f:
     for line in f:
-        english_to_hindi_data.append(json.loads(line)['hi_wikipedia_title'])
+        info = json.loads(line)
+        if 'en_wikipedia_title' in info:
+            english_to_hindi_data.append(['hi_wikipedia_title'])
 
 with open('log_name_id.json') as f:
     hindi_dict = json.load(f)
 
-fw = open('mapping.csv', "w+")
+fw = open('secondary_dataset.json', "w+")
 hindi_data = hindi_dict['data']
 count = 0
 query1 = """SELECT DISTINCT ?lang ?name ?instanceLabel WHERE {
@@ -61,7 +64,9 @@ for article in hindi_data:
                             # print(result['instanceLabel']['value'])
                             if result['instanceLabel']['value'] == 'human':
                                 print(result['name']['value'])
-                                fw.write(result['name']['value'] + ","+article[1]+"\n")
+                                info_dict = {"en_wikipedia_title":result['name']['value'], "hi_wikipedia_title":article[1], "wd_id":v['pageprops']['wikibase_item']}
+                                overall['data'].append(info_dict)
+                                # fw.write(result['name']['value'] + ","+article[1]+"\n")
                                 f = 1
                                 count += 1
                                 break
@@ -74,3 +79,4 @@ for article in hindi_data:
         sleep(1)
 
 print(count)
+json.dump(overall, fw)
