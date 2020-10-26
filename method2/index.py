@@ -28,10 +28,20 @@ stem_words = {}
 words_dict = {}
 title_dict = {}
 total_num_tokens = 0
-hindi_data = []
+eng_hindi_data = {}
 with open('hindi_person_data.json') as f:
     for line in f:
-        hindi_data.append(json.loads(line)['hi_wikipedia_title'].lower())
+        info = json.loads(line)
+        # print(info)
+        if 'en_wikipedia_title' in info:
+            # print("what")
+            eng_hindi_data[info['hi_wikipedia_title']] = [info['en_wikipedia_title'], info['wd_id']]
+        else:
+            eng_hindi_data[info['hi_wikipedia_title']] = ['', info['wd_id']]
+
+# print(eng_hindi_data)
+fw = open('primary_dataset.json', "w+")
+overall = {"data": []}
 count = 0
 def process(token):
     token = token.lower()
@@ -175,20 +185,37 @@ class WikiHandler(xml.sax.ContentHandler):
 
                     # for x in _cat.split(" "):
                         # field2[x].append(self.title)
-                global count
-                if self.title in hindi_data:
-                    self.title = self.title.lower()   
+                if self.title in eng_hindi_data:
+                    title = self.title
+                    info_dict = {"en_wikipedia_title": eng_hindi_data[title][0], "hi_wikipedia_title":title, "wd_id": eng_hindi_data[title][1]}
+                    overall["data"].append(info_dict)
+                    # fw.write(title+","+eng_hindi_data[title][0] + ","+eng_hindi_data[title][1]+"\n")
+                    
                     print(self.title) 
+                    global count
                     count += 1
                 # if f:
                 #     field2["लोग"]+=1
                 #field2[self.title.strip()].append(clean(self.data , "c"))                
                 #print(x.__repr__())
                 #field2[x].append((self.title , self.data))
+            # elif "{{ज्ञानसन्दूक" in self.data:
+            #     # infobox = self.data.split("{{ज्ञानसन्दूक")
+            #     # if len(infobox) > 1:
+            #     #     infobox = infobox[1].split("}}", 1)
+            #     cat = apply_regex(self.data , "c")
+            #     f = False
+                
+            #     for _cat in cat:
+            #         if "लोग" in _cat:
+            #             f = True
+            #             print(self.data)
+            
             self.data = ''
             self.title = ''
             self.id = ''
             self.redirect = False
+            
         elif tag == 'id':
             self.flag = 0
         elif tag == "mediawiki":
@@ -219,6 +246,7 @@ print("Number of files with infobox is " ,Handler.count)
 print("time to index is ",datetime.now() - parse_end)
 print("FINAL COUNT")
 print(count)
+json.dump(overall, fw)
 
 # आन्ध्र प्रदेश 4580
 # चित्र जोड़ें 3909
