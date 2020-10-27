@@ -1,4 +1,4 @@
 env/
 __pycache__
-.ipynb_checkpoints/
-HINBOT.ipynb
+# .ipynb_checkpoints/
+# HINBOT.ipynb
