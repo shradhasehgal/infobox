@@ -40,7 +40,7 @@ with open('hindi_person_data.json') as f:
             eng_hindi_data[info['hi_wikipedia_title']] = ['', info['wd_id']]
 
 # print(eng_hindi_data)
-fw = open('primary_dataset.json', "w+")
+fw = open('primary_dataset_new.json', "w+")
 overall = {"data": []}
 count = 0
 def process(token):
@@ -130,7 +130,7 @@ def index(docID,title,text):
     _,doc_dict['l'] = clean(text,"l")
     temp = Document(docID,title,doc_dict)
     title_dict[docID] = title + " " + str(num_tokens) 
- 
+    
 class Document():
     def __init__(self,docID,title,doc_dict):
         self.docID = docID
@@ -171,7 +171,7 @@ class WikiHandler(xml.sax.ContentHandler):
             self.title = self.title.strip()
             # if "संभल" in self.title:
             #     print("YEet" , self.title.__repr__())
-            if "{{Infobox" not in self.data and "{{ज्ञानसन्दूक" not in self.data:
+            if "{{Infobox" not in self.data and "{{ज्ञानसन्दूक" not in self.data and "{{ज्ञानसंदूक" not in self.data:
                 self.count+=1
                 # field2[self.title.strip()].append(apply_regex(self.data,"c"))
                 cat = apply_regex(self.data , "c")
