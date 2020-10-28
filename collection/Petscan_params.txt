@@ -1,0 +1,15 @@
+Set depth as 5 and exclude some common Infoboxes from the Template&links tab
+
+ज्ञानसन्दूक
+Infobox
+Infobox officeholder
+Infobox language
+ज्ञानसन्दूक भारत का राज्य
+ज्ञानसन्दूक भाषा
+Infobox Indian Jurisdiction
+Infobox Language
+Infobox writing system
+ज्ञानसन्दूक देश
+Infobox subdivision type
+
+
