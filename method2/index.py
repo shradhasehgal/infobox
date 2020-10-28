@@ -29,9 +29,11 @@ words_dict = {}
 title_dict = {}
 total_num_tokens = 0
 eng_hindi_data = {}
-with open('places_dataset_2.json') as f:
+with open('places_dataset_2-Copy1.json') as f:
     # for line in f:
     infot = json.load(f)
+#     for ind , info in enum
+    mapping = { info['hi_wikipedia_title'] : ind for ind , info in enumerate(infot['data'])}
     # print(info)
     for info in infot['data']:
     # if 'en_wikipedia_title' in info:
@@ -161,9 +163,14 @@ class WikiHandler(xml.sax.ContentHandler):
         self.id = ''
         self.count = 0
         self.flag = 1
+        self.redirect_val = ''
+        self.redirect = False
     def startElement(self,tag,attributes):
         self.tag = tag
+#         print(tag , attributes)
         if self.tag == 'title': self.flag = 1
+        if self.tag == 'redirect':
+            self.redirect_val = attributes._attrs['title'].strip()
 
     def endElement(self,tag):
         if tag == "text":
@@ -187,12 +194,27 @@ class WikiHandler(xml.sax.ContentHandler):
                     # for x in _cat.split(" "):
                         # field2[x].append(self.title)
                 if self.title in eng_hindi_data or ('जिला' in self.title and 'श्रेणी' not in self.title and 'साँचा' not in self.title):
+                    if self.redirect:
+#                         print(self.data)
+#                         print(self.redirect)
+#                         print(self.redirect_val)
+                        if self.title not in mapping : 
+                            print("Bad redirect")
+#                             print(self.title)
+#                             sys.exit(0)
+                        else:
+                            print("Redirect")
+#                         print(mapping[self.title])
+#                         print(infot['data'][mapping[self.title]])
+                            infot['data'][mapping[self.title]]['hi_wikipedia_title'] = self.redirect_val
+#                         print(infot['data'][mapping[self.title]])
+#                         exit(0)
                     # title = self.title
                     # info_dict = {"en_wikipedia_title": eng_hindi_data[title][0], "hi_wikipedia_title":title, "wd_id": eng_hindi_data[title][1]}
                     # overall["data"].append(info_dict)
                     # # fw.write(title+","+eng_hindi_data[title][0] + ","+eng_hindi_data[title][1]+"\n")
                     
-                    print(self.title) 
+#                     print(self.title) 
                     global count
                     count += 1
                 # if f:
@@ -216,11 +238,14 @@ class WikiHandler(xml.sax.ContentHandler):
             self.title = ''
             self.id = ''
             self.redirect = False
+            self.redirect_val = ''
             
         elif tag == 'id':
             self.flag = 0
         elif tag == "mediawiki":
             pass
+        elif tag == 'redirect':
+            self.redirect = True
         
     def characters(self,content):
         if self.tag == "title":
@@ -247,6 +272,10 @@ print("Number of files with infobox is " ,Handler.count)
 print("time to index is ",datetime.now() - parse_end)
 print("FINAL COUNT")
 print(count)
+
+with open('places_dataset_3.json','w+') as f:
+    json.dump(infot , f)
+
 # json.dump(overall, fw)
 
 # आन्ध्र प्रदेश 4580
