@@ -43,7 +43,7 @@ with open('places_dataset_3.json') as f:
         eng_hindi_data[info['hi_wikipedia_title']] = ['', info['wd_id']]
 
 # print(eng_hindi_data)
-# fw = open('primary_dataset.json', "w+")
+fw = open('primary_dataset_new.json', "w+")
 overall = {"data": []}
 count = 0
 def process(token):
@@ -133,7 +133,7 @@ def index(docID,title,text):
     _,doc_dict['l'] = clean(text,"l")
     temp = Document(docID,title,doc_dict)
     title_dict[docID] = title + " " + str(num_tokens) 
- 
+    
 class Document():
     def __init__(self,docID,title,doc_dict):
         self.docID = docID
