@@ -29,7 +29,7 @@ words_dict = {}
 title_dict = {}
 total_num_tokens = 0
 eng_hindi_data = {}
-with open('places_dataset_2-Copy1.json') as f:
+with open('places_dataset_3.json') as f:
     # for line in f:
     infot = json.load(f)
 #     for ind , info in enum
@@ -199,10 +199,12 @@ class WikiHandler(xml.sax.ContentHandler):
 #                         print(self.redirect)
 #                         print(self.redirect_val)
                         if self.title not in mapping : 
-                            print("Bad redirect")
+#                             print("Bad redirect")
+                            print()
 #                             print(self.title)
 #                             sys.exit(0)
                         else:
+                            print(self.title)
                             print("Redirect")
 #                         print(mapping[self.title])
 #                         print(infot['data'][mapping[self.title]])
@@ -273,8 +275,8 @@ print("time to index is ",datetime.now() - parse_end)
 print("FINAL COUNT")
 print(count)
 
-with open('places_dataset_3.json','w+') as f:
-    json.dump(infot , f)
+# with open('places_dataset_3.json','w+') as f:
+#     json.dump(infot , f)
 
 # json.dump(overall, fw)
 
