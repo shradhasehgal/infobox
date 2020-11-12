@@ -98,12 +98,13 @@ class Translation_Api():
     def get_page(self,page_name , language = "en"):
         return wptools.page(page_name , lang = language).get_parse()
         
-    def get_infobox(self,page_name):
+    def get_infobox(self,page_name , test = False):
         print(self , page_name)
         page = self.get_page(page_name)
         translator = Translation_Api()
         new_infobox = self.update(page.data['infobox'] , translator)
-        self.change_format(new_infobox)
+        if not test:
+            self.change_format(new_infobox)
         return new_infobox
         
 if __name__ == "__main__":
