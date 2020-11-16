@@ -180,14 +180,17 @@ class WikiHandler(xml.sax.ContentHandler):
     def endElement(self,tag):
         global count
         if tag == "text":
+
             self.docID+=1
             self.title = self.title.strip()
-            if count  == 800:
-                with open('eval_places.json','w+') as f:
+            if count  == 7:
+
+                with open('eval_places_2.json','w+') as f:
                     json.dump(overall, f)
                 exit(0)
-            if "{{Infobox" in self.data or "{{ज्ञानसन्दूक" in self.data or "{{Geobox" in self.data or "{{ज्ञानसंदूक" not in self.data:
+            if "{{Infobox" in self.data or "{{ज्ञानसन्दूक" in self.data or "{{Geobox" in self.data or "{{ज्ञानसंदूक" in self.data:
                 self.count+=1
+
                 cat = apply_regex(self.data , "c")
                 f = False
             
@@ -212,6 +215,8 @@ class WikiHandler(xml.sax.ContentHandler):
                             count += 1
                             overall['data'].append(info_dict)
                             # print(info_dict)
+                            print(english_page)
+                            print("\n\n\n\n\n")
                             print(count)
                             print("\n")
                 
@@ -253,6 +258,6 @@ print("FINAL COUNT")
 print(count)
 
 
-with open('eval_places.json','w+') as f:
+with open('eval_places_2.json','w+') as f:
     json.dump(overall, f)
 # json.dump(overall, fw)
