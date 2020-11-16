@@ -271,7 +271,11 @@ def parse_infobox(text):
     for line in text:
         if line == "}}" : break
         if line[0] != '|' : continue
-        x,y = line[2:].split(" = ")
+        line = line[2:].split(" = ")
+        if len(line) == 1:
+            x , y = line[0] , ""
+        else:
+            x , y = line[0] , line[1]
         ret[x] = y
     else :
         print("Parsing Error")
