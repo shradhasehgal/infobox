@@ -234,12 +234,16 @@ def baseline_infobox(wd, bio, trans):
 # In[116]:
 
 
+with open('done.pkl' , 'rb') as f:
+    done_data = pkl.load(f)
+
 with open('../data-collection/hindi_person_data.jsonl') as f:
     data = f.readlines()
     data = [ json.loads(ent) for ent in data]
 wiki_people = []
 for entry in data:
     try :
+        if entry['en_wikipedia_title'] in done_data: continue
         wiki_people.append([entry['en_wikipedia_title'] , entry['hi_wikipedia_title'] , entry['wd_id']])
     except :
         pass
