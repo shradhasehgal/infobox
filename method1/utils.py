@@ -26,64 +26,25 @@ def extractDescription(info):
     return info.get('descriptions', {}).get('hi', {}).get('value', "")
 
 # Print the name and the description
-def printNameAndDescription(info, trans):
-    name = extractName(info)
-    if name != "":
-        print('name' + ":", name)
-    desc = extractDescription(info)
-    # if desc != "":
-    #     print('description' + ":", desc)
-        
-# Print the information present in the entity itself
-def printOtherInfo(entity, bio):
-    # Get the claims subdict
-    for p in entity['claims'].keys():
-        if p not in bio.values():
-            # Get information on the property in Hindi
-            ent_info = getEntityInfo(p)
-            name, desc = extractName(ent_info), extractDescription(ent_info)
-            if name == "":
-                continue # if the Hindi property name is not null
-            value = ""
-            
-            # For every property in the claims subdict get information on the correspoding values
-            for data in entity.get('claims', {}).get(p, []):
-                res = data.get('mainsnak',{}).get('datavalue', {}).get('value', {})
-                if type(res) == dict:
-                    info_id = res.get('id', "")
-                    if info_id == "":
-                        continue
-                    info = getEntityInfo(info_id)
-                    pname, pdesc = extractName(info), extractDescription(info)
-                    if pname == "":
-                        continue
-                    if pdesc != "":
-                        pname += str(f'({pdesc})')
-                    value += pname
-            # Print the property name and value only if the value is present in native language
-            if value != "":
-                print(name + ": " + value)
+def printNameAndDescription(info):
+    return extractName(info)
     
-def getInfobox(wd, bio, trans):
+def getInfobox(wd, bio):
     # Get entity from api
     entity_info = getEntityInfo(wd)
     # Print name and description
-    printNameAndDescription(entity_info, trans)
+    result = {}
+    result['name'] = printNameAndDescription(entity_info)
     # Explicitly query using sparql to get main biography data
     # print("----------------------",trans['main_info'],"----------------------")
     for entity, wdt in bio.items():
         spqrqlq = f"SELECT ?entity ?entityLabel ?entityDescription WHERE {{ wd:{wd} wdt:{wdt} ?entity; SERVICE wikibase:label {{ bd:serviceParam wikibase:language \"hi\". }} }}"
-        if entity in trans:
-            s, v = trans[entity] + ": ", ""
-        else:
-            s,v = entity+": ", ""
-        res = get_results(endpoint_url,str(spqrqlq))
-        for entity in res['results']['bindings']:
-            value = entity.get('entityLabel').get('value', "")
+        v = ""
+        res = get_results(endpoint_url, str(spqrqlq))
+        for entities in res['results']['bindings']:
+            value = entities.get('entityLabel').get('value', "")
             if value != '' and 'Q' not in value:
-                v += value
+                v = value
         if v != "":
-            print(s + v)
-    # Print other relevant information if present in the entity 
-    # print("----------------------",trans['other_available_information'],"----------------------")
-    # printOtherInfo(entity_info, bio)
+            result[entity] = v
+    return result
